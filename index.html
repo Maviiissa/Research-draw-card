@@ -65,6 +65,11 @@
   <audio id="bgm" loop>
     <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f81b54f6.mp3" type="audio/mp3">
   </audio>
+  <!-- 抽卡记录 -->
+  <div id="history" style="margin-top:2rem; width:90%; max-width:500px; text-align:left;">
+    <h2 style="color:#facc15; font-size:1.3rem; margin-bottom:0.5rem;">抽卡记录</h2>
+    <ul id="history-list" style="list-style:none; padding-left:0; max-height:200px; overflow-y:auto;"></ul>
+  </div>
   <script>
     const bgm = document.getElementById("bgm");
     const drawBtn = document.getElementById("draw-btn");
