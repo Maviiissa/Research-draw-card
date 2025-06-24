@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>科研人抽卡机</title>
+  <title>科研蟑螂抽卡机</title>
   <style>
     body {
       font-family: 'Courier New', monospace;
@@ -29,6 +29,10 @@
       color: #111;
       font-size: 1.2rem;
       cursor: pointer;
+    }
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
     }
     #card {
       margin-top: 2rem;
@@ -56,118 +60,144 @@
       font-size: 1.2rem;
       line-height: 1.5;
     }
+    #history {
+      margin-top: 2rem;
+      width: 90%;
+      max-width: 500px;
+      text-align: left;
+    }
+    #history h2 {
+      color: #facc15;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    #history-list {
+      list-style: none;
+      padding: 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    #history-list li {
+      background: rgba(250, 201, 21, 0.1);
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
-  <h1>科研母蟑螂抽卡机 🎴</h1>
+  <h1>科研蟑螂抽卡机 🎴</h1>
   <button id="draw-btn">抽一张卡！</button>
   <div id="card"></div>
-  <audio id="bgm" loop>
+  <div id="history">
+    <h2>抽卡记录</h2>
+    <ul id="history-list"></ul>
+  </div>
+  <audio id="bgm" loop style="display:none;">
     <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f81b54f6.mp3" type="audio/mp3">
   </audio>
-  <!-- 抽卡记录 -->
-  <div id="history" style="margin-top:2rem; width:90%; max-width:500px; text-align:left;">
-    <h2 style="color:#facc15; font-size:1.3rem; margin-bottom:0.5rem;">抽卡记录</h2>
-    <ul id="history-list" style="list-style:none; padding-left:0; max-height:200px; overflow-y:auto;"></ul>
-  </div>
   <script>
     const bgm = document.getElementById("bgm");
     const drawBtn = document.getElementById("draw-btn");
     const cardDiv = document.getElementById("card");
     const historyList = document.getElementById("history-list");
-    const cardDiv = document.getElementById("card");
 
     // 全部卡片列表
     const cards = [
-      { level: 'SSR', text: "Clubbing 蹦起来💃" },
-      { level: 'SR',  text: "原地大笑30秒，假笑也行，别问，问就是自救😅" },
-      { level: 'R',   text: "今天必须写至少300 words科研相关输出，写完今天才能休息。" },
+      { level: 'SSR', text: "周末Club蹦起来💃" },
+      { level: 'SR',  text: "原地大笑30秒，假笑也行，别问，问就是发疯😅" },
+      { level: 'R',   text: "必须写至少500 words科研相关输出，写完才能休息。" },
       { level: 'R',   text: "录一段你向自己解释研究方法的视频，存档以后看笑话" },
       { level: 'SSR', text: "独自看一部电影，不发朋友圈，不说一句话" },
-      { level: 'R',   text: "列10个“我不想做但必须做”的事，承认它们" },
-      { level: 'SSR', text: "写一篇《科研拉踩文》，内容不限对象，越drama越好" },
-      { level: 'SR',  text: "让gpt用《甄嬛传》的语气回忆你申请PhD的那段时光" },
-      { level: 'SSR', text: "拍一个“被科研支配的一天”短片" },
-      { level: 'SR',  text: "听大悲咒洗脑30分钟，看能不能清除科研业障" },
-      { level: 'SR',  text: "今天不许碰电子烟😄" },
-      { level: 'SR',  text: "让gpt写一份‘科研疯女人申请表’，内容越离谱越好" },
+      { level: 'SR',  text: "列10个“我不想做但必须做”的事，承认它们" },
+      { level: 'SR',  text: "约人去图书馆" },
+      { level: 'SR', text: "写一篇《科研拉踩文》，内容不限对象，越drama越好" },
+      { level: 'SR', text: "随即打开《沉思录》抄一段话" },
+      { level: 'SR',  text: "让GPT用《甄嬛传》的语气回忆你申请PhD的那段时光" },
+      { level: 'SR', text: "拍一个“被科研支配的一天”短片" },
+      { level: 'SR',  text: "听大悲咒洗脑30分钟，清清科研业障🧘" },
+      { level: 'SR',  text: "不许碰电子烟😄" },
+      { level: 'SR',  text: "让GPT写一份‘科研疯女人申请表’，内容越离谱越好" },
       { level: 'SR',  text: "今日早睡挑战：23:00前关灯，别硬撑，你撑不出诺奖" },
-      { level: 'R',   text: "关掉所有消息通知5小时，世界塌了也别管" },
+      { level: 'R',   text: "关掉所有消息通知5小时，世界塌了也不许开" },
       { level: 'R',   text: "扮演PI半小时，对着镜子讲你的research impact" },
-      { level: 'R',   text: "今天只准用‘论文体’和人类说话（包括和自己）🙃" },
-      { level: 'SSR', text: "设定两小时写作无网挑战，成功可刷30分钟抖音" },
+      { level: 'SR',  text: "一整天只准用‘论文体’和人类说话（包括和自己）🙃" },
+      { level: 'R',   text: "设定两小时写作无网挑战，成功可刷30分钟抖音" },
       { level: 'SR',  text: "到公园观察鸟类30分钟，试图理解自由" },
-      { level: 'R',   text: "今晚睡前电子产品封禁1小时🙂" },
-      { level: 'R',   text: "起床不摸手机挑战——输了就做20个深蹲" },
+      { level: 'SR',  text: "今晚睡前电子产品封禁1小时🙂" },
+      { level: 'SR',  text: "起床不摸手机挑战——输了就做20个深蹲" },
       { level: 'SR',  text: "搜一个“如何躺平却仍然赢得诺奖”的关键词，读它" },
       { level: 'SR',  text: "吃饭的时候看一集虹猫蓝兔七侠传" },
-      { level: 'R',   text: "现在立刻喝水600ml，变身科研水母" },
+      { level: 'R',   text: "保证一天喝水800ml，变身科研水母🪼" },
       { level: 'SR',  text: "随机查一个你不了解的宗教，了解15分钟" },
-      { level: 'SSR', text: "如果再熬到凌晨2点，就盯着天花板，默念课题名称100遍" },
+      { level: 'SR',  text: "如果再熬到凌晨2点，就盯着天花板，默念课题名称100遍" },
       { level: 'SSR', text: "周末约人Coffee Chat，不聊科研，不聊论文，不聊老板！" },
       { level: 'SR',  text: "听一整张你高中时最爱的专辑，穿越回那个无忧无虑的年代" },
       { level: 'R',   text: "设置番茄钟45分钟写作，立刻开始" },
       { level: 'R',   text: "读一篇文献吧哈哈哈哈哈" },
-      { level: 'SSR', text: "去吃Brunch！！" },
-      { level: 'SSR', text: "周末出去走一万步！不限方向，母蟑螂出街！" },
-      { level: 'R',   text: "明天早起10分钟，去楼顶看风景" },
-      { level: 'R',   text: "奖励你写一篇500词文献总结:P" },
-      { level: 'SSR', text: "和怪宝打一小时王者荣耀" },
-      { level: 'R',   text: "用emoji写一篇今日总结" },
-      { level: 'R',   text: "跳一支尬舞并录下来，发给科研朋友" },
+      { level: 'SSR', text: "周末吃个Brunch！！" },
+      { level: 'SSR', text: "周末出去走一万步！不限方向，蟑螂出洞！" },
+      { level: 'R',   text: "早起10分钟，去楼顶看风景" },
+      { level: 'R',   text: "奖励写一篇500词文献总结:P" },
+      { level: 'SSR', text: "奖励点一顿外卖" },
+      { level: 'SR',  text: "和GPT对话30分钟，只聊感情和娱乐圈" },
+      { level: 'SR',  text: "出门晒20分钟太阳" },
       { level: 'SR',  text: "看一部纪录片or电影" },
-      { level: 'SSR', text: "拍一张你坐在论文堆里的悲壮照并命名" },
-      { level: 'R',   text: "完成45分钟锻炼，出汗才算！" },
-      { level: 'SR',  text: "刷30分钟抖音" },
-      { level: 'SR',  text: "清理桌面 & 重建Endnote文献系统" },
-      { level: 'SSR', text: "假装你是发Nature学者，在咖啡店装逼" },
+      { level: 'SR',  text: "去Carlton Gardens公园走一圈" },
+      { level: 'SR',  text: "完成45分钟锻炼，出汗才算！" },
+      { level: 'SR',  text: "一天只能刷30分钟抖音" },
+      { level: 'R',   text: "清理桌面 & 整理Zotero文献" },
+      { level: 'SSR', text: "看一集生活大爆炸" },
       { level: 'SR',  text: "卜一卦" },
-      { level: 'SR',  text: "看YouTube跟练健身10分钟" },
-      { level: 'SSR', text: "去个没去过的Suburb逛一天" },
+      { level: 'SR',  text: "跟YouTube健身10分钟" },
+      { level: 'SSR', text: "周末去个没去过的Suburb逛一天" },
       { level: 'R',   text: "给每篇文献起一个搞笑中文标题" },
       { level: 'SR',  text: "看一个“我不想读博了”视频" },
-      { level: 'SSR', text: "哲学酒局" },
-      { level: 'SSR', text: "和怪宝玩一小时锈湖" },
+      { level: 'SSR', text: "组一个哲学酒局" },
+      { level: 'SR',  text: "深呼吸5次，机会+1" },
       { level: 'SR',  text: "即刻去健身房健身45mins" },
-      { level: 'SSR', text: "和怪宝打一小时王者荣耀" },
-      { level: 'SSR', text: "打麻将咯" },
-      { level: 'SR',  text: "打开你最喜欢的文献，朗读一段然后翻译成Rap" },
-      { level: 'R',   text: "模拟未来在Conference上的自我介绍" },
+      { level: 'R',   text: "恭喜你，喜提一小时写作训练" },
+      { level: 'SSR', text: "周末打麻将咯" },
+      { level: 'R',   text: "打开你最喜欢的文献，朗读一段然后翻译成Rap" },
+      { level: 'R',   text: "模拟在Conference上的3mins自我介绍" },
       { level: 'R',   text: "找一篇水文，用红笔批到血流成河" },
       { level: 'SSR', text: "如何呢又能怎？今天想干嘛干嘛" }
     ];
 
     // 分组
-    const rCards   = cards.filter(c => c.level === 'R');
-    const srCards  = cards.filter(c => c.level === 'SR');
-    const ssrCards = cards.filter(c => c.level === 'SSR');
+    const rCards   = cards.filter(c => c.level==='R');
+    const srCards  = cards.filter(c => c.level==='SR');
+    const ssrCards = cards.filter(c => c.level==='SSR');
 
-    // 历史记录
-    const history = [];
+    // 历史记录（localStorage持久化）
+    let history = JSON.parse(localStorage.getItem('drawCardHistory') || '[]');
+    function renderHistory() {
+      historyList.innerHTML = history.map(i=>`<li>${i}</li>`).join('');
+    }
+    renderHistory();
+
+    // 每天只可抽一次
+    const todayKey = new Date().toISOString().slice(0,10);
+    if(localStorage.getItem('lastDrawDate') === todayKey) drawBtn.disabled = true;
 
     function drawCard() {
-      if (bgm.paused) bgm.play().catch(() => {});
+      if (drawBtn.disabled) return;
+      if(bgm.paused) bgm.play().catch(()=>{});
       const rand = Math.random();
-      let pool;
-      if (rand < 0.15) pool = ssrCards;
-      else if (rand < 0.40) pool = srCards;
-      else pool = rCards;
-
-      const card = pool[Math.floor(Math.random() * pool.length)];
-      cardDiv.classList.remove("show");
-      cardDiv.innerHTML = `
-        <div class="card-title">${card.level} 抽中！</div>
-        <div class="card-body">${card.text}</div>
-      `;
-      setTimeout(() => cardDiv.classList.add("show"), 50);
-
-      // 添加日期
+      let pool = rand<0.15? ssrCards : rand<0.40? srCards : rCards;
+      const card = pool[Math.floor(Math.random()*pool.length)];
+      cardDiv.classList.remove('show');
+      cardDiv.innerHTML = `<div class='card-title'>${card.level} 抽中！</div><div class='card-body'>${card.text}</div>`;
+      setTimeout(()=>cardDiv.classList.add('show'),50);
       const now = new Date().toLocaleString();
       history.unshift(`${now} — ${card.level} - ${card.text}`);
-      if (history.length > 20) history.pop();
-      historyList.innerHTML = history.map(item => `<li>${item}</li>`).join('');
+      if(history.length>20) history.pop();
+      localStorage.setItem('drawCardHistory', JSON.stringify(history));
+      renderHistory();
+      localStorage.setItem('lastDrawDate', todayKey);
+      drawBtn.disabled = true;
     }
-
     drawBtn.onclick = drawCard;
   </script>
 </body>
