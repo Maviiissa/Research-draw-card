@@ -59,13 +59,15 @@
 </head>
 <body>
   <h1>科研母蟑螂抽卡机 🎴</h1>
-  <button onclick="drawCard()">抽一张卡！</button>
+  <button id="draw-btn">抽一张卡！</button>
   <div id="card"></div>
   <audio id="bgm" loop>
-    <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e8/Tchaikovsky_-_Nutcracker_-_Dance_of_the_Sugar_Plum_Fairy.ogg/Tchaikovsky_-_Nutcracker_-_Dance_of_the_Sugar_Plum_Fairy.ogg.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f81b54f6.mp3" type="audio/mp3">
+    <!-- 若需更换音乐，可用任意mp3在线链接 -->
   </audio>
   <script>
     const bgm = document.getElementById("bgm");
+    const drawBtn = document.getElementById("draw-btn");
     const cards = [
       { level: 'SSR', text: "Clubbing 蹦起来" },
       { level: 'R', text: "设置番茄钟45分钟写作，立刻开始" },
@@ -104,6 +106,7 @@
       cardDiv.innerHTML = `<div class='card-title'>${card.level} 抽中！</div><div class='card-body'>${card.text}</div>`;
       setTimeout(() => cardDiv.classList.add("show"), 50);
     }
+    drawBtn.onclick = drawCard;
   </script>
 </body>
 </html>
