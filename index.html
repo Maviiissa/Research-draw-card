@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>科研人抽卡机</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: #facc15;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 1rem 2rem;
+      background: #facc15;
+      border: none;
+      border-radius: 8px;
+      color: #111;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    #card {
+      margin-top: 2rem;
+      font-size: 1.3rem;
+      text-align: center;
+      padding: 2rem;
+      border: 2px dashed #facc15;
+      border-radius: 12px;
+      max-width: 500px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    #card.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .card-title {
+      font-weight: bold;
+      color: #facc15;
+      margin-bottom: 0.5rem;
+      font-size: 1.4rem;
+    }
+    .card-body {
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <h1>科研母蟑螂抽卡机 🎴</h1>
+  <button onclick="drawCard()">抽一张卡！</button>
+  <div id="card"></div>
+
+  <script>
+    const cards = [
+      { level: 'SSR', text: "Clubbing 蹦起来" },
+      { level: 'R', text: "设置番茄钟45分钟写作，立刻开始" },
+      { level: 'R', text: "读一篇文献吧哈哈哈哈哈" },
+      { level: 'SSR', text: "去吃Brunch！！" },
+      { level: 'R', text: "奖励你写一篇500词文献总结:P" },
+      { level: 'SSR', text: "和怪宝打一小时王者荣耀" },
+      { level: 'R', text: "用emoji写一篇今日总结" },
+      { level: 'R', text: "跳一支尬舞并录下来，发给科研朋友" },
+      { level: 'SR', text: "看一部纪录片or电影" },
+      { level: 'SSR', text: "拍一张你坐在论文堆里的悲壮照并命名" },
+      { level: 'R', text: "完成45分钟锻炼，出汗才算！" },
+      { level: 'SR', text: "刷30分钟抖音" },
+      { level: 'SR', text: "清理桌面 & 重建Endnote文献系统" },
+      { level: 'SSR', text: "假装你是发Nature学者，在咖啡店装逼" },
+      { level: 'SR', text: "卜一卦" },
+      { level: 'SR', text: "看YouTube跟练健身10分钟" },
+      { level: 'SSR', text: "去个没去过的Suburb逛一天" },
+      { level: 'R', text: "给每篇文献起一个搞笑中文标题" },
+      { level: 'SR', text: "看一个我不想读博了视频" },
+      { level: 'SSR', text: "哲学酒局" }
+      { level: 'SSR', text: "和怪宝玩一小时锈湖" }
+      { level: 'SR', text: "即刻去健身房健身45mins" }
+      { level: 'SSR', text: "和怪宝打一小时王者荣耀" }
+      { level: 'SSR', text: "打麻将咯" }
+      { level: 'SR', text: "打开你最喜欢的文献，朗读一段然后翻译成Rap" }
+      { level: 'R', text: "模拟未来在Conference上的自我介绍" }
+      { level: 'R', text: "找一篇水文，用红笔批到血流成河" }
+      { level: 'SSR', text: "如何呢又能怎？今天想干嘛干嘛" }
+    ];
+
+    function drawCard() {
+      const card = cards[Math.floor(Math.random() * cards.length)];
+      const cardDiv = document.getElementById("card");
+      cardDiv.classList.remove("show");
+      cardDiv.innerHTML = `<div class='card-title'>${card.level} 抽中！</div><div class='card-body'>${card.text}</div>`;
+      setTimeout(() => cardDiv.classList.add("show"), 50);
+    }
+  </script>
+</body>
+</html>
