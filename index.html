@@ -12,8 +12,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding-top: 2rem;
+      justify-content: center;
+      height: 100vh;
       margin: 0;
     }
     h1 {
@@ -56,40 +56,12 @@
       font-size: 1.2rem;
       line-height: 1.5;
     }
-    #history {
-      margin-top: 2rem;
-      width: 90%;
-      max-width: 500px;
-      text-align: left;
-    }
-    #history h2 {
-      color: #facc15;
-      margin-bottom: 0.5rem;
-      font-size: 1.3rem;
-    }
-    #history-list {
-      list-style: none;
-      padding-left: 0;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    #history-list li {
-      background: rgba(250, 201, 21, 0.1);
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      border-radius: 4px;
-      font-size: 0.95rem;
-    }
   </style>
 </head>
 <body>
   <h1>科研母蟑螂抽卡机 🎴</h1>
   <button id="draw-btn">抽一张卡！</button>
   <div id="card"></div>
-  <div id="history">
-    <h2>抽卡记录</h2>
-    <ul id="history-list"></ul>
-  </div>
   <audio id="bgm" loop>
     <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12f81b54f6.mp3" type="audio/mp3">
   </audio>
@@ -97,8 +69,8 @@
     const bgm = document.getElementById("bgm");
     const drawBtn = document.getElementById("draw-btn");
     const cardDiv = document.getElementById("card");
-    const historyList = document.getElementById("history-list");
 
+    // 全部卡片列表
     const cards = [
       { level: 'SSR', text: "Clubbing 蹦起来💃" },
       { level: 'SR',  text: "原地大笑30秒，假笑也行，别问，问就是自救😅" },
@@ -158,10 +130,12 @@
       { level: 'SSR', text: "如何呢又能怎？今天想干嘛干嘛" }
     ];
 
+    // 分组
     const rCards   = cards.filter(c => c.level === 'R');
     const srCards  = cards.filter(c => c.level === 'SR');
     const ssrCards = cards.filter(c => c.level === 'SSR');
 
+    // 历史记录
     const history = [];
 
     function drawCard() {
@@ -180,6 +154,7 @@
       `;
       setTimeout(() => cardDiv.classList.add("show"), 50);
 
+      // 添加日期
       const now = new Date().toLocaleString();
       history.unshift(`${now} — ${card.level} - ${card.text}`);
       if (history.length > 20) history.pop();
