@@ -44,7 +44,6 @@
     #card.show {
       opacity: 1;
       transform: scale(1);
-      animation: flashSSR 0.6s ease-out;
     }
     .card-title {
       font-weight: bold;
@@ -56,6 +55,9 @@
       font-size: 1.2rem;
       line-height: 1.5;
     }
+    .flash {
+      animation: flashSSR 0.6s ease-out;
+    }
     @keyframes flashSSR {
       0% { box-shadow: 0 0 10px 5px #ff0; }
       50% { box-shadow: 0 0 30px 10px #facc15; }
@@ -65,14 +67,24 @@
 </head>
 <body>
   <h1>科研母蟑螂抽卡机 🎴</h1>
-  <button onclick="drawCard()">抽一张卡！</button>
+  <button id="draw-btn">抽一张卡！</button>
   <div id="card"></div>
 
-  <audio id="bgm" autoplay loop>
+  <audio id="bgm" loop>
     <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e8/Tchaikovsky_-_Nutcracker_-_Dance_of_the_Sugar_Plum_Fairy.ogg/Tchaikovsky_-_Nutcracker_-_Dance_of_the_Sugar_Plum_Fairy.ogg.mp3" type="audio/mpeg">
   </audio>
 
   <script>
+    const bgm = document.getElementById('bgm');
+    const drawBtn = document.getElementById('draw-btn');
+
+    drawBtn.addEventListener('click', () => {
+      if (bgm.paused) {
+        bgm.play().catch(e => console.log("Audio blocked:", e));
+      }
+      drawCard();
+    });
+
     const cards = [
       { level: 'SSR', text: "今晚去Revolver蹦一次，释放科研怨气" },
       { level: 'SR', text: "设置番茄钟45分钟写作，立刻开始" },
@@ -99,9 +111,14 @@
     function drawCard() {
       const card = cards[Math.floor(Math.random() * cards.length)];
       const cardDiv = document.getElementById("card");
-      cardDiv.classList.remove("show");
+      cardDiv.className = "";  // reset
       cardDiv.innerHTML = `<div class='card-title'>${card.level} 抽中！</div><div class='card-body'>${card.text}</div>`;
-      setTimeout(() => cardDiv.classList.add("show"), 50);
+      setTimeout(() => {
+        cardDiv.classList.add("show");
+        if (card.level === 'SSR') {
+          cardDiv.classList.add("flash");
+        }
+      }, 50);
     }
   </script>
 </body>
