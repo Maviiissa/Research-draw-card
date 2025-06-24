@@ -176,30 +176,6 @@
       historyList.innerHTML = history.map(i=>`<li>${i}</li>`).join('');
     }
     renderHistory();
-
-    // 每天只可抽一次
-    const now = new Date();
-    const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    if (localStorage.getItem('lastDrawDate') === todayKey) drawBtn.disabled = true;
-
-    function drawCard() {
-      if (drawBtn.disabled) return;
-      if (bgm.paused) bgm.play().catch(() => {});
-      const rand = Math.random();
-      let pool = rand < 0.15 ? ssrCards : rand < 0.40 ? srCards : rCards;
-      const card = pool[Math.floor(Math.random() * pool.length)];
-      cardDiv.classList.remove('show');
-      cardDiv.innerHTML = `<div class='card-title'>${card.level} 抽中！</div><div class='card-body'>${card.text}</div>`;
-      setTimeout(() => cardDiv.classList.add('show'), 50);
-      const timestamp = now.toLocaleString();
-      history.unshift(`${timestamp} — ${card.level} - ${card.text}`);
-      if (history.length > 20) history.pop();
-      localStorage.setItem('drawCardHistory', JSON.stringify(history));
-      renderHistory();
-      localStorage.setItem('lastDrawDate', todayKey);
-      drawBtn.disabled = true;
-    }
-    drawBtn.onclick = drawCard;
   </script>
 </body>
 </html>
