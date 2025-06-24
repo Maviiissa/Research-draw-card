@@ -99,7 +99,6 @@
     const cardDiv = document.getElementById("card");
     const historyList = document.getElementById("history-list");
 
-    // 全部卡片列表
     const cards = [
       { level: 'SSR', text: "Clubbing 蹦起来💃" },
       { level: 'SR',  text: "原地大笑30秒，假笑也行，别问，问就是自救😅" },
@@ -159,12 +158,10 @@
       { level: 'SSR', text: "如何呢又能怎？今天想干嘛干嘛" }
     ];
 
-    // 按 level 分组
     const rCards   = cards.filter(c => c.level === 'R');
     const srCards  = cards.filter(c => c.level === 'SR');
     const ssrCards = cards.filter(c => c.level === 'SSR');
 
-    // 历史记录
     const history = [];
 
     function drawCard() {
@@ -183,7 +180,8 @@
       `;
       setTimeout(() => cardDiv.classList.add("show"), 50);
 
-      history.unshift(`${card.level} - ${card.text}`);
+      const now = new Date().toLocaleString();
+      history.unshift(`${now} — ${card.level} - ${card.text}`);
       if (history.length > 20) history.pop();
       historyList.innerHTML = history.map(item => `<li>${item}</li>`).join('');
     }
