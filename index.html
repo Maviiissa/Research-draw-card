@@ -55,70 +55,54 @@
       font-size: 1.2rem;
       line-height: 1.5;
     }
-    .flash {
-      animation: flashSSR 0.6s ease-out;
-    }
-    @keyframes flashSSR {
-      0% { box-shadow: 0 0 10px 5px #ff0; }
-      50% { box-shadow: 0 0 30px 10px #facc15; }
-      100% { box-shadow: none; }
-    }
   </style>
 </head>
 <body>
   <h1>科研母蟑螂抽卡机 🎴</h1>
-  <button id="draw-btn">抽一张卡！</button>
+  <button onclick="drawCard()">抽一张卡！</button>
   <div id="card"></div>
-
   <audio id="bgm" loop>
     <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e8/Tchaikovsky_-_Nutcracker_-_Dance_of_the_Sugar_Plum_Fairy.ogg/Tchaikovsky_-_Nutcracker_-_Dance_of_the_Sugar_Plum_Fairy.ogg.mp3" type="audio/mpeg">
   </audio>
-
   <script>
-    const bgm = document.getElementById('bgm');
-    const drawBtn = document.getElementById('draw-btn');
-
-    drawBtn.addEventListener('click', () => {
-      if (bgm.paused) {
-        bgm.play().catch(e => console.log("Audio blocked:", e));
-      }
-      drawCard();
-    });
-
+    const bgm = document.getElementById("bgm");
     const cards = [
-      { level: 'SSR', text: "今晚去Revolver蹦一次，释放科研怨气" },
-      { level: 'SR', text: "设置番茄钟45分钟写作，立刻开始" },
-      { level: 'R', text: "发一个可爱表情包给对象，开启对话" },
-      { level: 'SSR', text: "穿浮夸衣服去Carlton吃甜点，假装生活很精致" },
-      { level: 'SR', text: "完成3篇文献批注，写出总结" },
-      { level: 'SSR', text: "和对象一起远程写作番茄钟，并比谁更专注" },
+      { level: 'SSR', text: "Clubbing 蹦起来" },
+      { level: 'R', text: "设置番茄钟45分钟写作，立刻开始" },
+      { level: 'R', text: "读一篇文献吧哈哈哈哈哈" },
+      { level: 'SSR', text: "去吃Brunch！！" },
+      { level: 'R', text: "奖励你写一篇500词文献总结:P" },
+      { level: 'SSR', text: "和怪宝打一小时王者荣耀" },
       { level: 'R', text: "用emoji写一篇今日总结" },
       { level: 'R', text: "跳一支尬舞并录下来，发给科研朋友" },
-      { level: 'SR', text: "看一部舒缓纪录片，比如《Salt Fat Acid Heat》" },
+      { level: 'SR', text: "看一部纪录片or电影" },
       { level: 'SSR', text: "拍一张你坐在论文堆里的悲壮照并命名" },
       { level: 'R', text: "完成45分钟锻炼，出汗才算！" },
-      { level: 'R', text: "互发一张今天自拍+一句今日情绪" },
-      { level: 'SR', text: "清空桌面 & 重建Endnote文献系统" },
+      { level: 'SR', text: "刷30分钟抖音" },
+      { level: 'SR', text: "清理桌面 & 重建Endnote文献系统" },
       { level: 'SSR', text: "假装你是发Nature学者，在咖啡店装逼" },
-      { level: 'SR', text: "做一次10分钟冥想或正念呼吸练习" },
+      { level: 'SR', text: "卜一卦" },
       { level: 'SR', text: "看YouTube跟练健身10分钟" },
-      { level: 'SSR', text: "去一个你没去过的Suburb并评分" },
+      { level: 'SSR', text: "去个没去过的Suburb逛一天" },
       { level: 'R', text: "给每篇文献起一个搞笑中文标题" },
-      { level: 'SR', text: "写封信给让你成长的人（不发也可）" },
-      { level: 'SSR', text: "玩一次‘科研与恋爱是否并行’辩论赛" }
+      { level: 'SR', text: "看一个我不想读博了视频" },
+      { level: 'SSR', text: "哲学酒局" },
+      { level: 'SSR', text: "和怪宝玩一小时锈湖" },
+      { level: 'SR', text: "即刻去健身房健身45mins" },
+      { level: 'SSR', text: "和怪宝打一小时王者荣耀" },
+      { level: 'SSR', text: "打麻将咯" },
+      { level: 'SR', text: "打开你最喜欢的文献，朗读一段然后翻译成Rap" },
+      { level: 'R', text: "模拟未来在Conference上的自我介绍" },
+      { level: 'R', text: "找一篇水文，用红笔批到血流成河" },
+      { level: 'SSR', text: "如何呢又能怎？今天想干嘛干嘛" }
     ];
-
     function drawCard() {
+      if (bgm.paused) bgm.play().catch(() => {});
       const card = cards[Math.floor(Math.random() * cards.length)];
       const cardDiv = document.getElementById("card");
-      cardDiv.className = "";  // reset
+      cardDiv.classList.remove("show");
       cardDiv.innerHTML = `<div class='card-title'>${card.level} 抽中！</div><div class='card-body'>${card.text}</div>`;
-      setTimeout(() => {
-        cardDiv.classList.add("show");
-        if (card.level === 'SSR') {
-          cardDiv.classList.add("flash");
-        }
-      }, 50);
+      setTimeout(() => cardDiv.classList.add("show"), 50);
     }
   </script>
 </body>
