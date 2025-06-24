@@ -30,10 +30,6 @@
       font-size: 1.2rem;
       cursor: pointer;
     }
-    button:disabled {
-      background: #555;
-      cursor: not-allowed;
-    }
     #card {
       margin-top: 2rem;
       font-size: 1.3rem;
@@ -103,7 +99,6 @@
     const cardDiv = document.getElementById("card");
     const historyList = document.getElementById("history-list");
 
-    // 全部卡片列表
     const cards = [
       { level: 'SSR', text: "周末Club蹦起来💃" },
       { level: 'SR',  text: "原地大笑30秒，假笑也行，别问，问就是发疯😅" },
@@ -164,25 +159,48 @@
       { level: 'R',   text: "找一篇水文，用红笔批到血流成河" },
       { level: 'SSR', text: "如何呢又能怎？今天想干嘛干嘛" }
     ];
+    const rCards   = cards.filter(c => c.level === 'R');
+    const srCards  = cards.filter(c => c.level === 'SR');
+    const ssrCards = cards.filter(c => c.level === 'SSR');
 
-    // 分组
-    const rCards   = cards.filter(c => c.level==='R');
-    const srCards  = cards.filter(c => c.level==='SR');
-    const ssrCards = cards.filter(c => c.level==='SSR');
-
-    // 历史记录（localStorage持久化）
     let history = JSON.parse(localStorage.getItem('drawCardHistory') || '[]');
     function renderHistory() {
-      historyList.innerHTML = history.map(i=>`<li>${i}</li>`).join('');
+      historyList.innerHTML = history.map(i => `<li>${i}</li>`).join('');
     }
     renderHistory();
-    // 每天只可抽一次
+
     const now = new Date();
-    const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    if (localStorage.getItem('lastDrawDate') === todayKey) drawBtn.disabled = true;
-    
+    const todayKey = now.toISOString().slice(0, 10);
+    const drawState = JSON.parse(localStorage.getItem('drawState') || '{}');
+
+    if (!drawState[todayKey]) {
+      drawState[todayKey] = { count: 0, lastTime: 0 };
+      localStorage.setItem('drawState', JSON.stringify(drawState));
+    }
+
+    const todayState = drawState[todayKey];
+    const hoursSinceLast = (Date.now() - todayState.lastTime) / (1000 * 60 * 60);
+
+    if (todayState.count >= 3 && hoursSinceLast < 6) {
+      drawBtn.disabled = true;
+      drawBtn.textContent = `已抽3次，${Math.ceil(6 - hoursSinceLast)}小时后再来🎴`;
+    }
+
     function drawCard() {
-      if (drawBtn.disabled) return;
+      const now = new Date();
+      const todayKey = now.toISOString().slice(0, 10);
+      const drawState = JSON.parse(localStorage.getItem('drawState') || '{}');
+      if (!drawState[todayKey]) {
+        drawState[todayKey] = { count: 0, lastTime: 0 };
+      }
+
+      const todayState = drawState[todayKey];
+      const hoursSinceLast = (Date.now() - todayState.lastTime) / (1000 * 60 * 60);
+      if (todayState.count >= 3 && hoursSinceLast < 6) {
+        alert(`今天已经抽了3次啦！还要等 ${Math.ceil(6 - hoursSinceLast)} 小时再来～`);
+        return;
+      }
+
       if (bgm.paused) bgm.play().catch(() => {});
       const rand = Math.random();
       let pool = rand < 0.15 ? ssrCards : rand < 0.40 ? srCards : rCards;
@@ -195,11 +213,18 @@
       if (history.length > 20) history.pop();
       localStorage.setItem('drawCardHistory', JSON.stringify(history));
       renderHistory();
-      localStorage.setItem('lastDrawDate', todayKey);
-      drawBtn.disabled = true;
-    }
-    drawBtn.onclick = drawCard;
 
+      drawState[todayKey].count += 1;
+      drawState[todayKey].lastTime = Date.now();
+      localStorage.setItem('drawState', JSON.stringify(drawState));
+
+      if (drawState[todayKey].count >= 3) {
+        drawBtn.disabled = true;
+        drawBtn.textContent = `已抽3次，6小时后再来🎴`;
+      }
+    }
+
+    drawBtn.onclick = drawCard;
   </script>
 </body>
 </html>
